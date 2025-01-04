@@ -279,34 +279,54 @@ def sidebar(
     ################
     # Configurações | Título
     expander = st.sidebar.expander("Configurações da Ferramenta")
-    WORD_CONFIG_WIDTH_TABLE = expander.number_input("Largura Tabelas", value = 4)
+    WORD_CONFIG_WIDTH_TABLE = expander.number_input(
+        label = "Largura Tabelas", 
+        value = 4, 
+        help = "Escolhe a largura das tabelas que estarão no Word"
+        )
 
     # Configurações | Cor Header
-    WORD_CONFIG_COLOR_HEADER = expander.color_picker("Cor do Header", WORD_CONFIG_COLOR_HEADER_DEFAULT)
+    WORD_CONFIG_COLOR_HEADER = expander.color_picker(
+            label = "Cor do Header", 
+            value = WORD_CONFIG_COLOR_HEADER_DEFAULT, 
+            help = "Escolhe a cor do Header das tabelas que estarão no Word"
+            )
     expander.write(WORD_CONFIG_COLOR_HEADER)
 
     # Configurações | Tamanho Fonte
-    WORD_CONFIG_FONT_SIZE = expander.number_input("Font Size Header", value = 10)
+    WORD_CONFIG_FONT_SIZE = expander.number_input(
+        label = "Font Size Header", 
+        value = 10,
+        help = "Escolhe tamanho da fonte do Header das tabelas que estarão no Word"
+        )
 
     # Configurações | Cor Fonte Header
     color_options_dict = {"Branco": "#FFFFFF", 
                           "Preto": "#000000"}
     color_options_list = color_options_dict.keys()
-    color_chosen = expander.selectbox("Cor Fonte Header", color_options_list)
+    color_chosen = expander.selectbox(
+        "Cor Fonte Header", 
+        color_options_list, 
+        help = "Escolhe a cor da fonte do Header das tabelas que estarão no Word"
+        )
     WORD_CONFIG_FONT_COLOR = color_options_dict[color_chosen]
 
-    # Configurações | Cor Fonte Header
+    # Configurações | Logo
     logo_options_dict = {"Logo Completo": LOGO_FULL_TEXT_PATH,
                          "Logo Simples": LOGO_PATH,
                          "Sem Logo": None
                         }
     logo_options_list = logo_options_dict.keys()
-    logo_chosen = expander.selectbox("Logo Header do Word", logo_options_list)
+    logo_chosen = expander.selectbox(
+        "Tipo de Logo", 
+        logo_options_list,
+        help = "Escolhe formato do logo que estará no Header do Word",
+        )
     WORD_CONFIG_LOGO_PATH = logo_options_dict[logo_chosen]
 
     ################
     # Passo-a-Passo
-    expander = st.sidebar.expander("Passo-a-Passo")
+    expander = st.sidebar.expander(label = "Passo-a-Passo")
     expander.write('''
         1) Faça o upload do arquivo Excel com os dados da proposta
         2) Clique no botão "Gerador de Proposta"
@@ -327,7 +347,11 @@ def button_upload_file():
         df_result: DataFrame com dados
     """
     # Permite usuário dar upload de arquivo com dados no formato para construir os gráficos
-    Upload_Data = st.file_uploader("Upload Proposta Excel", type = ["xlsx"])
+    Upload_Data = st.file_uploader(
+        label = "Upload Proposta Excel", 
+        type = ["xlsx"],
+        help = "Arraste o arquivo Excel com as tabelas coladas nas abas e às nomeie com o nome da seguradora"
+        )
 
     # Caso tenha sido realizado algum upload
     if Upload_Data is not None:
