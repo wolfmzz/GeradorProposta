@@ -412,6 +412,6 @@ df_result = button_upload_file()
 
 ########## Geador de Proposta ##########
 # Caso botão de gerar proposta seja clicado
-if st.button("Gerador de Proposta"):
+if st.button("Gerador de Proposta", help = "Ao clicar, aguarde alguns segundos enquanto o arquivo é gerado e depois clique no botão de download para obter o arquivo Word"):
 
     gerador_propostas(df_result, WORD_CONFIG_LOGO_PATH)
