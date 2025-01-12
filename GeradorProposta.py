@@ -191,7 +191,7 @@ def add_table_in_word(
 # Função que coloca os dados no arquivo Word
 def load_tables(
     Upload_Data: pd.DataFrame,
-    WORD_CONFIG_LOGO_PATH: str = None,
+    WORD_CONFIG_LOGO_PATH: str = None
     ):
     """
     Função que coloca os dados no arquivo Word
@@ -212,34 +212,24 @@ def load_tables(
     time_now = now.strftime("%Y-%m-%d")
 
     # Pega o nome do cliente e da nome ao arquivo
-    client_name = Upload_Data["Config"].Cliente.values[0]
+    # client_name = Upload_Data["Config"].Cliente.values[0]
     file_name = f"Orçamento_{client_name}_{time_now}.docx"
 
     # Access each sheet by its name
     for sheet_name, df in Upload_Data.items():
 
-        # Caso seja a sheet de configuração, pega o nome do cliente
-        if sheet_name == "Config":
+        # Status
+        print(f"Sheet name: {sheet_name}")
+        print(df.head())
 
-            # Status
-            print(f"Config")
-            print(df.head())
-
-        # Caso seja qualquer outra sheet, pega os dados
-        else:
-
-            # Status
-            print(f"Sheet name: {sheet_name}")
-            print(df.head())
-
-            # Adiciona tabela no arquivo Word
-            doc = add_table_in_word(df, 
-                                    sheet_name, 
-                                    WORD_CONFIG_WIDTH_TABLE, 
-                                    WORD_CONFIG_COLOR_HEADER,
-                                    WORD_CONFIG_FONT_SIZE,
-                                    WORD_CONFIG_FONT_COLOR,
-                                    doc)
+        # Adiciona tabela no arquivo Word
+        doc = add_table_in_word(df, 
+                                sheet_name, 
+                                WORD_CONFIG_WIDTH_TABLE, 
+                                WORD_CONFIG_COLOR_HEADER,
+                                WORD_CONFIG_FONT_SIZE,
+                                WORD_CONFIG_FONT_COLOR,
+                                doc)
 
     # Use a BytesIO buffer to save the document in-memory
     word_file = BytesIO()
@@ -248,7 +238,7 @@ def load_tables(
     # Vai para o início do buffer BytesIO
     word_file.seek(0)  
 
-    return word_file, doc, file_name, client_name
+    return word_file, doc, file_name
 
 
 
@@ -373,7 +363,8 @@ def button_upload_file():
 # Botão Gerador de Propostas
 def gerador_propostas(
     df_result: pd.DataFrame,
-    WORD_CONFIG_LOGO_PATH: str = None
+    WORD_CONFIG_LOGO_PATH: str = None,
+    client_name: str = "Nome_do_Cliente"
 ):
     """
     Função que gera propostas de seguro de saúde
@@ -385,7 +376,7 @@ def gerador_propostas(
         None
     """
     # Carrega as tabelas de cotação e cola no Word
-    word_file, doc, file_name, client_name = load_tables(df_result, WORD_CONFIG_LOGO_PATH)
+    word_file, doc, file_name = load_tables(df_result, WORD_CONFIG_LOGO_PATH)
 
     # Cria botão para download do arquivo Word
     st.download_button(
@@ -404,6 +395,10 @@ def gerador_propostas(
 # Título
 st.title("Propostas de Seguro de Saúde")
 
+# Input string nome do cliente
+st.write("Insira o nome do cliente")
+client_name = st.text_input("Nome do Cliente", "Nome_Exemplo")
+
 # Cria a sidebar
 WORD_CONFIG_FONT_SIZE, WORD_CONFIG_WIDTH_TABLE, WORD_CONFIG_COLOR_HEADER, WORD_CONFIG_FONT_COLOR, WORD_CONFIG_LOGO_PATH = sidebar(WORD_CONFIG_COLOR_HEADER_DEFAULT, LOGO_PATH)
 
@@ -414,4 +409,4 @@ df_result = button_upload_file()
 # Caso botão de gerar proposta seja clicado
 if st.button("Gerador de Proposta", help = "Ao clicar, aguarde alguns segundos enquanto o arquivo é gerado e depois clique no botão de download para obter o arquivo Word"):
 
-    gerador_propostas(df_result, WORD_CONFIG_LOGO_PATH)
+    gerador_propostas(df_result, WORD_CONFIG_LOGO_PATH, client_name)
